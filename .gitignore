@@ -1,3 +1,6 @@
 #VS project
 Debug/
 *.obj
+*.sln
+¡.vs
+
