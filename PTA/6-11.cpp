@@ -18,17 +18,43 @@ int main()
 	return 0;
 }
 
-ElementType Median(ElementType A[], int N) {
-	int p1 = 1, p2 = N - 1, i = 0, tmp;
-	for (i = 0; i == N / 2;) {
-		tmp = A[i];
-		while (p1 < p2 - 1) {
-			for (; A[p1] > tmp&&p1 < p2; p1++);
-			A[i] = A[p1];
-			for (; A[p2] < tmp&&p1 < p2; p2--);
-			A[p1] = A[p2];
-			A[p2] = A[i];
+void swap(ElementType *a, ElementType *b)
+{
+	ElementType tmp;
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
+
+int quickfound(ElementType A[], int l, int r) 
+{
+	ElementType tmp = A[l];
+	while (l < r) {
+		while (tmp < A[r] && l < r)
+		{
+			r--;
 		}
-		
+		swap(&A[l], &A[r]);
+		while (A[l] < tmp && l < r)
+		{
+			l++;
+		}
+		swap(&A[l], &A[r]);
 	}
+	return l;
+}
+
+ElementType Median(ElementType A[], int N)
+{
+	int l = 0, r = N - 1;
+	int p = quickfound(A, l, r);
+	while (p != N / 2) 
+	{
+		if (p < N / 2)
+			l = p + 1;
+		else
+			r = p - 1;
+		p = quickfound(A, l, r);
+	}
+	return A[N / 2];
 }
