@@ -2,7 +2,10 @@
 Debug/
 *.obj
 *.sln
-.vs
+*.vs
+*.vcxproj.*
+*.vcxproj
 
 # this project
 PAT/
+
