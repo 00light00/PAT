@@ -11,6 +11,9 @@ struct City {
 	}
 };
 
+typedef pair<City, int> pci;
+priority_queue<pci, vector<pci>, greater<pci> >pq;
+
 void Dijkstra1(int s, vector<vector<City> > & graph, int n);
 void Dijkstra2(int s, vector<vector<City> > & graph, int n);
 
@@ -67,13 +70,9 @@ void Dijkstra1(int s, vector<vector<City> > & graph, int n) {
 void Dijkstra2(int s, vector<vector<City> > & graph, int n) {
 
 	vector<int> visit(n, 0);
-	priority_queue<City> pq;
 	visit[s] = 1;
 
-	for (int i = 0; i < n; i++) {
-		if (!visit[i])
-			pq.push(graph[s][i]);
-	}
+	pq.push(pci(graph[s][i], s));
 
 	while (1) {
 		int city = s;
