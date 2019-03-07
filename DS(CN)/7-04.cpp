@@ -1,88 +1,93 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-typedef int Tree;
-struct Tnode {
+struct tnode {
 	int data;
-	Tree l, r;
-	int flag;
+	int left, right;
+	tnode(int v = 0) : data(v), left(-1), right(-1) {};
 };
+vector<tnode> tree;
 
-bool check(vector<Tnode> tree, int n) {
-	bool re = false;
-	vector<int> binTree;
-	for (int i = 0; i < n; i++) {
-		int num;
-		scanf("%d",&num);
-		binTree.push_back(num);
+int insert(int root, int i) {
+	int re = i;
+	if (root < 0)
+		return re;
+	int data = tree[i].data;
+	if (data < tree[root].data) {
+		tree[root].left = insert(tree[root].left, i);
 	}
+	else {
+		tree[root].right = insert(tree[root].right, i);
+	}
+	return re = root;
+}
 
+int check(vector<int> other) {
+	int re = 1;
+	int n = other.size();
+	vector<int> visit(n, 0);
 	for (int i = 0; i < n; i++) {
-		int nodeCheck = binTree[i];
-		for (int j = 0; j >= 0;) {
-			if (tree[j].flag) {
-				if (tree[j].data < nodeCheck)
-					j = tree[j].r;
-				else if (tree[j].data > nodeCheck)
-					j = tree[j].l;
-				else
-					return re;
+		int data = other[i];
+		int root = 0;
+		while (root != -1) {
+			if (visit[root]) {
+				if (data < tree[root].data) {
+					if (tree[root].left == -1)
+						return re = 0;
+					else {
+						root = tree[root].left;
+					}
+				}
+				else if (data > tree[root].data) {
+					if (tree[root].right == -1)
+						return re = 0;
+					else {
+						root = tree[root].right;
+					}
+				}
 			}
 			else {
-				if (tree[j].data == nodeCheck) {
-					tree[j].flag = 1;
+				if (data == tree[root].data) {
+					visit[root] = 1;
 					break;
 				}
 				else
-					return re;
+					return re = 0;
 			}
 		}
 	}
-	return re = true;
+	return re;
 }
 
 
 int main() {
 	int n, l;
 	scanf("%d", &n);
-	vector<Tnode> tree(n);
 	while (n) {
 		scanf("%d", &l);
+		vector<tnode> tmp(n);
 		for (int i = 0; i < n; i++) {
-			int data;
-			scanf("%d", &data);
-			tree[i].data = data;
-			tree[i].l = tree[i].r = -1;
-			tree[i].flag = 0;
-
-			for (int j = 0; j >= 0;) {
-				if (data > tree[j].data) {
-					if (tree[j].r > 0)
-						j = tree[j].r;
-					else {
-						tree[j].r = i;
-						break;
-					}
-				}
-				else {
-					if (tree[j].l > 0)
-						j = tree[j].l;
-					else {
-						tree[j].l = i;
-						break;
-					}
-				}
-			}
+			scanf("%d", &tmp[i].data);
+		}
+		tree = tmp;
+		for (int i = 1; i < n; i++) {
+			insert(0, i);
 		}
 
 		for (int i = 0; i < l; i++) {
-			if (check(tree, n))
+			vector<int> othertree(n);
+			for(int j = 0; j < n;j++)
+				scanf("%d", &othertree[j]);
+			int re = check(othertree);
+			if (re) {
 				printf("Yes\n");
-			else
+			}
+			else {
 				printf("No\n");
+			}
 		}
-
 		scanf("%d", &n);
 	}
+	
 	return 0;
 }

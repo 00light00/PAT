@@ -1,30 +1,33 @@
 #include<bits/stdc++.h>
 using namespace std;
+vector<int> root, psize;
 
-int find(vector<int> & root, int id) {
+int find(int id) {
 	int r = root[id];
-	while (r > 0) {
-		if (root[r] > 0) {
-			root[id] = root[r];
-		}
-		r = root[id];
+	while (r != root[r]) {
+		root[r] = root[root[r]];
+		r = root[r];
 	}
 	return r;
 }
 
-void unionfind(vector<int> & root, int root1, int root2) {
-	if (root[root1] < root[root2]) {
+void unionfind(int id1, int id2) {
+	int root1 = find(id1), root2 = find(id2);
+	if (psize[root1] < psize[root2]) {
 		swap(root1, root2);
 	}
-	root[root1] = root2;
-	root[root2]--;
+	root[root2] = root1;
+	psize[root1] += psize[root2];
 }
 
 int main() {
 	int n, m;
 	scanf("%d %d", &n, &m);
-	vector<int> root(n + 1, -1);
 	multimap<int, pair<int, int> >mp;
+	root.resize(n + 1), psize.resize(n + 1, 1);
+	for (int i = 0; i <= n; i++) {
+		root[i] = i;
+	}
 	for (int i = 0; i < m; i++) {
 		int id1, id2, cost;
 		scanf("%d %d %d", &id1, &id2, &cost);
@@ -34,10 +37,10 @@ int main() {
 	int cnt = 0, sum = 0;
 	for (auto it = mp.begin(); it != mp.end();it++) {
 		int id1 = it->second.first, id2 = it->second.second;
-		int root1 = find(root, id1), root2 = find(root, id2);
+		int root1 = find(id1), root2 = find(id2);
 		if (root1 == root2)
 			continue;
-		unionfind(root, root1, root2);
+		unionfind(root1, root2);
 		cnt++;
 		sum += it->first;
 		if (cnt == n - 1)
